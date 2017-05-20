@@ -5,12 +5,19 @@
 \title{gera grafico medias}
 \usage{
 geraIndicadores(geraGraficosMedias = FALSE,
-  geraGraficosRespostasCorretas = FALSE)
+  geraGraficosRespostasCorretas = FALSE, co_ies = c(1556, 583, 1895),
+  co_uf_curso = 23, co_catad = 10005)
 }
 \arguments{
-\item{geraGraficosMedias:}{Boleano para gerar Graficos Medias}
+\item{geraGraficosMedias:}{Boleano para gerar Graficos Medias. Por Padrao False}
 
-\item{geraGraficosRespostasCorretas:}{Boleano para gerar graficos Respostas Corretas}
+\item{geraGraficosRespostasCorretas:}{Boleano para gerar graficos Respostas Corretas. Por Padrao False}
+
+\item{co_ies:}{Codigo da Instituicao de Ensino Superior. Por padrao c(1556, 583, 1895)        #UNI7, UFC, UniChristus}
+
+\item{co_uf_curso:}{UF do Curso. Por padrao CE}
+
+\item{co_catad:}{Categoria da Instituicao. Por padrao: Instituicao Privada sem Fins Lucrativos.}
 }
 \description{
 Funcao para gerar os graficos do ENADE

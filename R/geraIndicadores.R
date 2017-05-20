@@ -1,21 +1,48 @@
 #' @title gera grafico medias
 #' @description Funcao para gerar os graficos do ENADE
 #' @author Vitor Almeida - vitoralm@gmail.com
-#' @param geraGraficosMedias: Boleano para gerar Graficos Medias
-#' @param geraGraficosRespostasCorretas: Boleano para gerar graficos Respostas Corretas
+#' @param geraGraficosMedias: Boleano para gerar Graficos Medias. Por Padrao False
+#' @param geraGraficosRespostasCorretas: Boleano para gerar graficos Respostas Corretas. Por Padrao False
+#' @param co_ies: Codigo da Instituicao de Ensino Superior. Por padrao c(1556, 583, 1895)        #UNI7, UFC, UniChristus
+#' @param co_uf_curso: UF do Curso. Por padrao CE
+#' @param co_catad: Categoria da Instituicao. Por padrao: Instituicao Privada sem Fins Lucrativos.
 #' @import stringi
+#' @import tidyr
+#' @import magrittr
 #' @export
-geraIndicadores <- function(geraGraficosMedias = FALSE, geraGraficosRespostasCorretas = FALSE) {
+geraIndicadores <- function(geraGraficosMedias = FALSE,
+                            geraGraficosRespostasCorretas = FALSE,
+                            co_ies = c(1556, 583, 1895),
+                            co_uf_curso = 23,
+                            co_catad = 10005
+                            ) {
 
 
-  data <- getData()
-  co_ies <- c(1556, 583, 1895)        #UNI7, UFC, UniChristus
-  co_uf_curso <- 23     #UF CE
-  co_catad <- 10005     #Instituição privada com fins lucrativos
-  col_co_ies <- 3       #Coluna da Instituicao
-  col_co_uf_curso <- 7  #Coluna da UF
-  col_co_catad <- 4     #Coluna Categoria administrativa
 
+
+  getData()
+  # Recuperando numero das colunas
+  #data <- subset(read.table("data/microdados_enade_2014.csv",header=T,sep=";"), co_grupo == 4006)
+  col_co_ies = which( colnames(data)=="co_ies" )
+  col_co_uf_curso = which( colnames(data)=="co_uf_curso" )
+  col_co_catad = which( colnames(data)=="co_catad" )
+  col_vt_gab_ofg_fin = which( colnames(data)=="vt_gab_ofg_fin" )  #Coluna com gabarito da forma??o geral
+  col_vt_gab_oce_fin = which( colnames(data)=="vt_gab_oce_fin" )  #Coluna com gabarito de componentes espec?ficos
+  col_vt_esc_ofg = which( colnames(data)=="vt_esc_ofg" )       #Coluna com escolhas da forma??o geral
+  col_vt_esc_oce = which( colnames(data)=="vt_esc_oce" )      #Coluna com escolhas de componentes espec?ficos
+  col_nt_fg_d1_pt = which( colnames(data)=="nt_fg_d1_pt" )     #Coluna com Nota de L?ngua Portuguesa da quest?o 1 da parte discursiva da forma??o geral
+  col_nt_fg_d1_ct = which( colnames(data)=="nt_fg_d1_ct" )     #Coluna com Nota de Conte?do da quest?o 1 da parte discursiva da forma??o geral
+  col_nt_fg_d2_pt = which( colnames(data)=="nt_fg_d2_pt" )     #Coluna com Nota de L?ngua Portuguesa da quest?o 2 da parte discursiva da forma??o geral
+  col_nt_fg_d2_ct = which( colnames(data)=="nt_fg_d2_ct" )     #Coluna com Nota de Conte?do da quest?o 2 da parte discursiva da forma??o geral
+  col_nt_ce_d1 = which( colnames(data)=="nt_ce_d1" )         #Coluna com Nota da quest?o 1 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
+  col_nt_ce_d2 = which( colnames(data)=="nt_ce_d2" )         #Coluna com Nota da quest?o 2 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
+  col_nt_ce_d3 = which( colnames(data)=="nt_ce_d3" )        #Coluna com Nota da quest?o 3 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
+
+  # Formando coluna escolhas
+  data %<>% unite(escolhas, col_vt_esc_ofg, col_vt_esc_oce, sep = "", remove = FALSE)
+
+
+  print(co_uf_curso)
   n <- nrow(data)       #total de alunos
   n_uf <- sum(data$co_uf_curso == co_uf_curso)  #total de alunos da UF
   n_catad <- length(which(data$co_catad == co_catad & data$co_uf_curso == co_uf_curso))  #total de alunos da categoria administrativa (privada)
@@ -64,16 +91,9 @@ geraIndicadores <- function(geraGraficosMedias = FALSE, geraGraficosRespostasCor
 
 
   total_comp <- length(n_comp)
-  print(n_comp)
+
 
   ##### PARTE DISCURSIVA #####
-  col_nt_fg_d1_pt <- 52     #Coluna com Nota de L?ngua Portuguesa da quest?o 1 da parte discursiva da forma??o geral
-  col_nt_fg_d1_ct <- 53     #Coluna com Nota de Conte?do da quest?o 1 da parte discursiva da forma??o geral
-  col_nt_fg_d2_pt <- 55     #Coluna com Nota de L?ngua Portuguesa da quest?o 2 da parte discursiva da forma??o geral
-  col_nt_fg_d2_ct <- 56     #Coluna com Nota de Conte?do da quest?o 2 da parte discursiva da forma??o geral
-  col_nt_ce_d1 <- 61        #Coluna com Nota da quest?o 1 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
-  col_nt_ce_d2 <- 62        #Coluna com Nota da quest?o 2 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
-  col_nt_ce_d3 <- 63        #Coluna com Nota da quest?o 3 da parte discursiva do componente espec?fico - Convertida para escala de 0 a 100
 
   medias_comp <- list()
 
@@ -98,7 +118,6 @@ geraIndicadores <- function(geraGraficosMedias = FALSE, geraGraficosRespostasCor
     soma_nt_ce_d1_comp[1] <- if (nt_ce_d1 == "" || is.na(nt_ce_d1)) soma_nt_ce_d1_comp[1] else soma_nt_ce_d1_comp[1] + nt_ce_d1
     soma_nt_ce_d2_comp[1] <- if (nt_ce_d2 == "" || is.na(nt_ce_d2)) soma_nt_ce_d2_comp[1] else soma_nt_ce_d2_comp[1] + nt_ce_d2
     soma_nt_ce_d3_comp[1] <- if (nt_ce_d3 == "" || is.na(nt_ce_d3)) soma_nt_ce_d3_comp[1] else soma_nt_ce_d3_comp[1] + nt_ce_d3
-
     if (uf == co_uf_curso) {
       soma_nt_fg_d1_pt_comp[2] <- if (nt_fg_d1_pt == "" || is.na(nt_fg_d1_pt)) soma_nt_fg_d1_pt_comp[2] else soma_nt_fg_d1_pt_comp[2] + nt_fg_d1_pt
       soma_nt_fg_d1_ct_comp[2] <- if (nt_fg_d1_ct == "" || is.na(nt_fg_d1_ct)) soma_nt_fg_d1_ct_comp[2] else soma_nt_fg_d1_ct_comp[2] + nt_fg_d1_ct
@@ -169,11 +188,6 @@ geraIndicadores <- function(geraGraficosMedias = FALSE, geraGraficosRespostasCor
 
   ###############################
 
-  ##### PARTE OBJETIVA #####
-  col_vt_gab_ofg_fin <- 29  #Coluna com gabarito da forma??o geral
-  col_vt_gab_oce_fin <- 35  #Coluna com gabarito de componentes espec?ficos
-  col_vt_esc_ofg <- 47      #Coluna com escolhas da forma??o geral
-  col_vt_esc_oce <- 49      #Coluna com escolhas de componentes espec?ficos
 
   gab <- paste(data[1,col_vt_gab_ofg_fin],data[1,col_vt_gab_oce_fin],sep="") #jun??o dos gabaritos
   n_questoes <- stri_length(gab)  #total de quest?es
@@ -212,7 +226,7 @@ geraIndicadores <- function(geraGraficosMedias = FALSE, geraGraficosRespostasCor
 
     #Itera sobre alunos
     for(a in 1:n) {
-      escolhas <- paste(data[a,col_vt_esc_ofg],data[a,col_vt_esc_oce],sep="")
+      escolhas <- data$escolhas[a] #paste(data[a,col_vt_esc_ofg],data[a,col_vt_esc_oce],sep="")
       item_marcado <- substr(escolhas, q, q)
       ies <- data[a,col_co_ies]
       uf <- data[a,col_co_uf_curso]

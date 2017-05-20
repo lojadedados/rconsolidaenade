@@ -5,8 +5,9 @@
 getData <- function() {
 
   if (is.null(data) || is.null(nrow(data))) {
-    data <- subset(read.table("data/microdados_enade_2014_SI.csv",header=T,sep=";"), co_grupo == 4006)
+    #data <- subset(read.table("data/microdados_enade_2014.csv",header=T,sep=";"), co_grupo == 4006)
+    load("data/data.Rda")
   }
 
-  data
+  #data
 }
