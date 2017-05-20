@@ -1,0 +1,15 @@
+Package: rconsolidaenade
+Type: Package
+Title: Pacote para recuperacao e consolidacao dos dados do ENADE
+Version: 0.1.0
+Author: Vitor Almeida (vitoralm@gmail.com) e Rodrigo Almeida
+    (rodrigo@lojadedados.com.br)
+Maintainer: Rodrigo Almeida <rodrigo.almeida@gmail.com>
+Description: Consolida os resultados do ENADE com foco em faculdades privadas do
+    Ceara
+License: 
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 5.0.1

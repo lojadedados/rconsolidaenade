@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/microdados_enade_2014.csv
+*.csv
+data/microdados_enade_2014_SI.csv
